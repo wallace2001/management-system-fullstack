@@ -12,6 +12,17 @@ jest.mock('@/modules/auth/hooks/use-login-mutation', () => ({
   }),
 }));
 
+jest.mock('ky', () => ({
+  create: () => ({
+    post: jest.fn(() => ({
+      json: async () => ({ access_token: 'fake-token' }),
+    })),
+    get: jest.fn(() => ({
+      json: async () => ({ id: 'user-id', username: 'admin' }),
+    })),
+  }),
+}));
+
 const renderWithClient = (ui: React.ReactNode) => {
   const queryClient = new QueryClient();
   return render(
@@ -26,7 +37,6 @@ describe('LoginForm', () => {
 
   it('renderiza inputs e botão', () => {
     renderWithClient(<LoginForm />);
-
     expect(screen.getByPlaceholderText(/seu usuário/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/sua senha/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /entrar/i })).toBeInTheDocument();
@@ -34,18 +44,14 @@ describe('LoginForm', () => {
 
   it('mostra erro se enviar sem preencher os campos', async () => {
     renderWithClient(<LoginForm />);
-
     await userEvent.click(screen.getByRole('button', { name: /entrar/i }));
 
     expect(await screen.findByText(/invalid username/i)).toBeInTheDocument();
-    expect(
-      await screen.findByText(/password must be at least 6 characters/i),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/password must be at least 6 characters/i)).toBeInTheDocument();
   });
 
   it('envia formulário com valores válidos', async () => {
     renderWithClient(<LoginForm />);
-
     await userEvent.type(screen.getByPlaceholderText(/seu usuário/i), 'admin');
     await userEvent.type(screen.getByPlaceholderText(/sua senha/i), '123456');
     await userEvent.click(screen.getByRole('button', { name: /entrar/i }));
