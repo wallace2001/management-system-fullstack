@@ -27,7 +27,6 @@ lerna-debug.log*
 # npm & yarn
 node_modules/
 package-lock.json
-yarn.lock
 
 # Temp folders
 .temp/
@@ -57,7 +56,6 @@ report.[0-9]*.json
 
 # Yarn v2+
 /frontend/.pnp*
-/frontend/.yarn/*
 !/frontend/.yarn/patches
 !/frontend/.yarn/plugins
 !/frontend/.yarn/releases
