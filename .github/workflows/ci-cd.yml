@@ -28,8 +28,10 @@ jobs:
         working-directory: ${{ matrix.project }}
         run: yarn install --frozen-lockfile
 
+      - name: Definir variáveis de ambiente
+        run: echo "DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/management_test" >> $GITHUB_ENV
+
       - name: Rodar testes
-        working-directory: ${{ matrix.project }}
         run: yarn test
 
       - name: Build do projeto
