@@ -22,13 +22,16 @@ import { useProductModals } from '../../store/use-products-modal-store';
 import { useCreateProduct } from '../../hooks/use-product';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CurrencyInput } from '@/components/currency-input';
+import { handleError } from '@/modules/errors/request-error';
 
 const createProductSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   category: z.string().min(1, 'Categoria é obrigatória'),
   description: z.string().min(1, 'Descrição é obrigatória'),
   price: z.coerce.number().min(0, 'Preço deve ser maior ou igual a 0'),
-  stockQuantity: z.coerce.number().min(0, 'Estoque deve ser maior ou igual a 0'),
+  stockQuantity: z.coerce
+    .number()
+    .min(0, 'Estoque deve ser maior ou igual a 0'),
 });
 
 type CreateProductValues = z.infer<typeof createProductSchema>;
@@ -54,6 +57,7 @@ export function CreateProductModal() {
         form.reset();
         close();
       },
+      onError: handleError,
     });
   }
 
@@ -129,7 +133,11 @@ export function CreateProductModal() {
                 <FormItem>
                   <FormLabel>Estoque</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Quantidade em estoque" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Quantidade em estoque"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -18,11 +18,9 @@ import {
 } from '@/components/ui/form';
 import { useOrdersModal } from '../../store/use-orders-modals-store';
 import { useUpdateOrder } from '../../hooks/use-order';
-import {
-  OrderFormValues,
-  orderSchema,
-} from '../../schemas/order-schema';
+import { OrderFormValues, orderSchema } from '../../schemas/order-schema';
 import { ProductMultiSelect } from '@/components/product-multi-select';
+import { handleError } from '@/modules/errors/request-error';
 
 export function EditOrderModal() {
   const { editOpen, selected, close } = useOrdersModal();
@@ -33,10 +31,13 @@ export function EditOrderModal() {
     values: {
       products:
         selected?.products && Array.isArray(selected.products)
-          ? selected.products.reduce((acc, item) => {
-              acc[item.productId] = item.quantity;
-              return acc;
-            }, {} as Record<string, number>)
+          ? selected.products.reduce(
+              (acc, item) => {
+                acc[item.productId] = item.quantity;
+                return acc;
+              },
+              {} as Record<string, number>,
+            )
           : {},
       status: selected?.status || 'PENDING',
     },
@@ -46,13 +47,14 @@ export function EditOrderModal() {
     if (!selected?.id) return;
     mutate(
       {
-          id: selected.id,
-          status: values.status,
-          products: values.products,
+        id: selected.id,
+        status: values.status,
+        products: values.products,
       },
       {
         onSuccess: () => close(),
-      }
+        onError: handleError,
+      },
     );
   };
 

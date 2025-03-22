@@ -9,11 +9,19 @@ import {
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@/components/ui/form';
 import { useCreateOrder } from '../../hooks/use-order';
 import { useOrdersModal } from '../../store/use-orders-modals-store';
 import { OrderFormValues, orderSchema } from '../../schemas/order-schema';
 import { ProductMultiSelect } from '@/components/product-multi-select';
+import { handleError } from '@/modules/errors/request-error';
 
 export function CreateOrderModal() {
   const { createOpen, close } = useOrdersModal();
@@ -34,6 +42,7 @@ export function CreateOrderModal() {
         form.reset();
         close();
       },
+      onError: handleError,
     });
   };
 

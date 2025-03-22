@@ -20,19 +20,23 @@ export default function ProductsPage() {
   const filteredProducts = useMemo(() => {
     if (!products) return [];
     return products.filter((product: Product) =>
-      product.name.toLowerCase().includes(search.toLowerCase())
+      product.name.toLowerCase().includes(search.toLowerCase()),
     );
   }, [products, search]);
 
   return (
-    <div className="p-6 space-y-6 mt-[80px]">
-        <CreateProductModal />
-        <DeleteProductModal />
-        <EditProductModal />
+    <div className="mt-[80px] space-y-6 p-6">
+      <CreateProductModal />
+      <DeleteProductModal />
+      <EditProductModal />
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Produtos</h1>
 
-        <Button onClick={openCreate} variant="default" className="flex items-center gap-2">
+        <Button
+          onClick={openCreate}
+          variant="default"
+          className="flex items-center gap-2"
+        >
           <PlusCircle className="h-4 w-4" /> Novo Produto
         </Button>
       </div>
@@ -45,10 +49,7 @@ export default function ProductsPage() {
         />
       </div>
 
-      <ProductsTable
-        products={filteredProducts}
-        isLoading={isLoading}
-      />
+      <ProductsTable products={filteredProducts} isLoading={isLoading} />
     </div>
   );
 }

@@ -40,12 +40,22 @@ export function OrdersTable() {
                 <TableCell>{order.id.slice(0, 8)}...</TableCell>
                 <TableCell>{order.status}</TableCell>
                 <TableCell>R$ {order.total.toFixed(2)}</TableCell>
-                <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </TableCell>
                 <TableCell className="space-x-2 text-right">
-                  <Button size="sm" variant="outline" onClick={() => openDetail(order)}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => openDetail(order)}
+                  >
                     <Eye className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => openEdit(order)}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => openEdit(order)}
+                  >
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <Button
@@ -61,7 +71,11 @@ export function OrdersTable() {
                   >
                     <Check className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="destructive" onClick={() => openDelete(order)}>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => openDelete(order)}
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </TableCell>
@@ -70,8 +84,8 @@ export function OrdersTable() {
           </TableBody>
         </Table>
       ) : (
-        <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
-          <PackageX className="w-12 h-12 mb-2" />
+        <div className="text-muted-foreground flex h-64 flex-col items-center justify-center">
+          <PackageX className="mb-2 h-12 w-12" />
           <p className="text-sm">Nenhum pedido encontrado.</p>
         </div>
       )}

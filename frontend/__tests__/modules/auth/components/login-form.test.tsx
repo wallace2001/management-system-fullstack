@@ -1,4 +1,3 @@
-
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LoginForm } from '@/modules/auth/components/login-form';
@@ -15,7 +14,9 @@ jest.mock('@/modules/auth/hooks/use-login-mutation', () => ({
 
 const renderWithClient = (ui: React.ReactNode) => {
   const queryClient = new QueryClient();
-  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
+  );
 };
 
 describe('LoginForm', () => {
@@ -37,9 +38,10 @@ describe('LoginForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /entrar/i }));
 
     expect(await screen.findByText(/invalid username/i)).toBeInTheDocument();
-    expect(await screen.findByText(/password must be at least 6 characters/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/password must be at least 6 characters/i),
+    ).toBeInTheDocument();
   });
-
 
   it('envia formulário com valores válidos', async () => {
     renderWithClient(<LoginForm />);

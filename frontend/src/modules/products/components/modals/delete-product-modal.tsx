@@ -1,7 +1,13 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useProductModals } from '../../store/use-products-modal-store';
 import { useDeleteProduct } from '../../hooks/use-product';
+import { handleError } from '@/modules/errors/request-error';
 
 export function DeleteProductModal() {
   const { deleteOpen, selected, close } = useProductModals();
@@ -16,7 +22,9 @@ export function DeleteProductModal() {
           <DialogTitle>Confirmar exclusão</DialogTitle>
         </DialogHeader>
 
-        <p className="text-sm">Deseja remover o produto <strong>{selected.name}</strong>?</p>
+        <p className="text-sm">
+          Deseja remover o produto <strong>{selected.name}</strong>?
+        </p>
 
         <div className="flex justify-end gap-2 pt-4">
           <Button variant="outline" onClick={close}>
@@ -25,7 +33,9 @@ export function DeleteProductModal() {
           <Button
             variant="destructive"
             disabled={isPending}
-            onClick={() => mutate(selected.id, { onSuccess: close })}
+            onClick={() =>
+              mutate(selected.id, { onSuccess: close, onError: handleError })
+            }
           >
             Confirmar
           </Button>

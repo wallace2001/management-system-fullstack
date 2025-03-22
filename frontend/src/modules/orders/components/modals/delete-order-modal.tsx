@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useOrdersModal } from '../../store/use-orders-modals-store';
 import { useDeleteOrder } from '../../hooks/use-order';
+import { handleError } from '@/modules/errors/request-error';
 
 export function DeleteOrderModal() {
   const { deleteOpen, selected, close } = useOrdersModal();
@@ -18,6 +19,7 @@ export function DeleteOrderModal() {
     if (!selected?.id) return;
     mutate(selected.id, {
       onSuccess: () => close(),
+      onError: handleError,
     });
   };
 

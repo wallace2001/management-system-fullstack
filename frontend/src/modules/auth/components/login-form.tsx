@@ -16,6 +16,7 @@ import { LoginFormValues, loginSchema } from '../schemas/login-schema';
 import { SubmitButton } from '@/components/submit-button';
 import Link from 'next/link';
 import { useLoginMutation } from '../hooks/use-login-mutation';
+import { handleError } from '@/modules/errors/request-error';
 
 export function LoginForm() {
   const loginMutation = useLoginMutation();
@@ -28,7 +29,9 @@ export function LoginForm() {
   });
 
   const onSubmit = (values: LoginFormValues) => {
-    loginMutation.mutate(values);
+    loginMutation.mutate(values, {
+      onError: handleError,
+    });
   };
 
   return (

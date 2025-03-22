@@ -56,7 +56,7 @@ export function ProductMultiSelect({
 
   return (
     <div className={cn('space-y-2', className)} {...props}>
-      <div className="flex gap-2 items-center">
+      <div className="flex items-center gap-2">
         <Select value={selectedId} onValueChange={setSelectedId}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Selecione um produto" />
@@ -82,20 +82,20 @@ export function ProductMultiSelect({
         <button
           type="button"
           onClick={handleAddProduct}
-          className="px-4 py-2 bg-primary text-white text-sm rounded"
+          className="bg-primary rounded px-4 py-2 text-sm text-white"
         >
           Adicionar
         </button>
       </div>
 
-      <div className="text-sm text-muted-foreground space-y-1">
+      <div className="text-muted-foreground space-y-1 text-sm">
         {Object.entries(value).length > 0 ? (
           Object.entries(value).map(([id, qty]) => {
             const name = products.find((p) => p.id === id)?.name || id;
             return (
               <div
                 key={id}
-                className="flex items-center justify-between border px-2 py-1 rounded"
+                className="flex items-center justify-between rounded border px-2 py-1"
               >
                 <span>
                   {name} — <strong>{qty}x</strong>

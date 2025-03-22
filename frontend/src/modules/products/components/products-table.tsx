@@ -51,8 +51,8 @@ export const ProductsTable = ({
 
   if (!isLoading && (!products || products.length === 0)) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
-        <PackageX className="w-12 h-12 mb-2" />
+      <div className="text-muted-foreground flex h-64 flex-col items-center justify-center">
+        <PackageX className="mb-2 h-12 w-12" />
         <p className="text-sm">Nenhum produto encontrado.</p>
       </div>
     );

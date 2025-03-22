@@ -7,7 +7,7 @@ export const orderSchema = z.object({
   }),
   products: z.record(
     z.string().uuid({ message: 'ID de produto inválido' }),
-    z.number().min(1, 'Quantidade mínima é 1')
+    z.number().min(1, 'Quantidade mínima é 1'),
   ),
 });
 

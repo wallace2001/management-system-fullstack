@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { Button } from '@/components/ui/button';
 import { CreateOrderModal } from '@/modules/orders/components/modals/create-order-modal';
@@ -13,15 +13,15 @@ export default function OrdersPage() {
   const { openCreate } = useOrdersModal();
 
   return (
-    <div className="p-6 mt-[80px] space-y-6">
-        <CreateOrderModal />
-        <EditOrderModal />
-        <DeleteOrderModal />
-        <ViewOrderModal />
-      <div className="flex justify-between items-center">
+    <div className="mt-[80px] space-y-6 p-6">
+      <CreateOrderModal />
+      <EditOrderModal />
+      <DeleteOrderModal />
+      <ViewOrderModal />
+      <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Pedidos</h1>
         <Button onClick={openCreate}>
-          <PlusCircle className="w-4 h-4 mr-2" />
+          <PlusCircle className="mr-2 h-4 w-4" />
           Novo Pedido
         </Button>
       </div>

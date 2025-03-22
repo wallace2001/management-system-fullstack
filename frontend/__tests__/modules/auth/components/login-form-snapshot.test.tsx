@@ -17,7 +17,7 @@ describe('LoginForm Snapshot', () => {
       .create(
         <QueryClientProvider client={queryClient}>
           <LoginForm />
-        </QueryClientProvider>
+        </QueryClientProvider>,
       )
       .toJSON();
 

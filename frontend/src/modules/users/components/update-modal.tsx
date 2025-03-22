@@ -29,6 +29,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { handleError } from '@/modules/errors/request-error';
 
 const schema = z.object({
   username: z.string().min(1, 'Usuário obrigatório'),
@@ -52,7 +53,7 @@ export function EditUserModal() {
   function onSubmit(values: FormValues) {
     mutate(
       { id: selectedUser?.id, ...values },
-      { onSuccess: () => closeModals() },
+      { onSuccess: () => closeModals(), onError: handleError },
     );
   }
 

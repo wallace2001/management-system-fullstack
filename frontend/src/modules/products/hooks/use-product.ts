@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
 import { Product } from '@/modules/shared/types/product';
 import { toast } from 'sonner';
-import { handleError } from '@/modules/errors/request-error';
 
 export function useCreateProduct() {
   const queryClient = useQueryClient();
@@ -14,7 +13,6 @@ export function useCreateProduct() {
       toast.success('Produto criado com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
-    onError: handleError,
   });
 }
 
@@ -28,7 +26,6 @@ export function useUpdateProduct() {
       toast.success('Produto atualizado com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
-    onError: handleError,
   });
 }
 
@@ -42,6 +39,5 @@ export function useDeleteProduct() {
       toast.success('Produto excluído com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
-    onError: handleError,
   });
 }

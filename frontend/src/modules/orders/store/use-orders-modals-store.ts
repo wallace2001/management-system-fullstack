@@ -21,13 +21,43 @@ export const useOrdersModal = create<OrdersModalStore>((set) => ({
   detailOpen: false,
   selected: null,
   openCreate: () =>
-    set({ createOpen: true, editOpen: false, deleteOpen: false, detailOpen: false, selected: null }),
+    set({
+      createOpen: true,
+      editOpen: false,
+      deleteOpen: false,
+      detailOpen: false,
+      selected: null,
+    }),
   openEdit: (order) =>
-    set({ editOpen: true, createOpen: false, deleteOpen: false, detailOpen: false, selected: order }),
+    set({
+      editOpen: true,
+      createOpen: false,
+      deleteOpen: false,
+      detailOpen: false,
+      selected: order,
+    }),
   openDelete: (order) =>
-    set({ deleteOpen: true, createOpen: false, editOpen: false, detailOpen: false, selected: order }),
+    set({
+      deleteOpen: true,
+      createOpen: false,
+      editOpen: false,
+      detailOpen: false,
+      selected: order,
+    }),
   openDetail: (order) =>
-    set({ detailOpen: true, createOpen: false, editOpen: false, deleteOpen: false, selected: order }),
+    set({
+      detailOpen: true,
+      createOpen: false,
+      editOpen: false,
+      deleteOpen: false,
+      selected: order,
+    }),
   close: () =>
-    set({ createOpen: false, editOpen: false, deleteOpen: false, detailOpen: false, selected: null }),
+    set({
+      createOpen: false,
+      editOpen: false,
+      deleteOpen: false,
+      detailOpen: false,
+      selected: null,
+    }),
 }));

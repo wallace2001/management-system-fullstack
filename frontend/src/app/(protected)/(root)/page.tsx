@@ -28,25 +28,25 @@ export default async function Home() {
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
           <Link
             href="/products"
-            className="bg-foreground text-background flex h-10 items-center justify-center gap-2 rounded-full border border-transparent px-6 text-sm font-medium transition hover:bg-[#383838] dark:hover:bg-[#ccc] sm:h-12 sm:text-base"
+            className="bg-foreground text-background flex h-10 items-center justify-center gap-2 rounded-full border border-transparent px-6 text-sm font-medium transition hover:bg-[#383838] sm:h-12 sm:text-base dark:hover:bg-[#ccc]"
           >
             Gerenciar Produtos
           </Link>
           <Link
             href="/orders"
-            className="flex h-10 items-center justify-center rounded-full border border-black/[.08] px-6 text-sm font-medium transition hover:border-transparent hover:bg-[#f2f2f2] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] sm:h-12 sm:text-base"
+            className="flex h-10 items-center justify-center rounded-full border border-black/[.08] px-6 text-sm font-medium transition hover:border-transparent hover:bg-[#f2f2f2] sm:h-12 sm:text-base dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
           >
             Visualizar Pedidos
           </Link>
           <Link
             href="/users"
-            className="flex h-10 items-center justify-center rounded-full border border-black/[.08] px-6 text-sm font-medium transition hover:border-transparent hover:bg-[#f2f2f2] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] sm:h-12 sm:text-base"
+            className="flex h-10 items-center justify-center rounded-full border border-black/[.08] px-6 text-sm font-medium transition hover:border-transparent hover:bg-[#f2f2f2] sm:h-12 sm:text-base dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
           >
             Lista de Usuários
           </Link>
         </div>
 
-        <div className="w-full mt-12 space-y-4">
+        <div className="mt-12 w-full space-y-4">
           <h2 className="text-xl font-semibold">Documentação da API</h2>
           <div className="relative h-[500px] w-full rounded-md border shadow">
             <iframe
@@ -57,7 +57,7 @@ export default async function Home() {
         </div>
       </main>
 
-      <footer className="row-start-3 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
+      <footer className="text-muted-foreground row-start-3 flex flex-wrap items-center justify-center gap-6 text-sm">
         <a
           href="https://nextjs.org"
           className="flex items-center gap-2 hover:underline"

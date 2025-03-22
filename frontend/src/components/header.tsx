@@ -2,7 +2,12 @@
 
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { UserButton } from '@/modules/auth/components/user-button';
 import { Menu } from 'lucide-react';
 import { User } from 'next-auth';
@@ -42,7 +47,9 @@ export default function Header({ user }: { user: User }) {
             </Button>
           )}
 
-          {user?.id ? <UserButton /> : (
+          {user?.id ? (
+            <UserButton />
+          ) : (
             <Button asChild>
               <Link href="/auth">Entrar</Link>
             </Button>
@@ -56,7 +63,7 @@ export default function Header({ user }: { user: User }) {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-64 p-6 space-y-4">
+            <SheetContent side="right" className="w-64 space-y-4 p-6">
               <SheetTitle />
               <div className="space-y-2 pt-10">
                 <Button

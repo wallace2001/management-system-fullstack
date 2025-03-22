@@ -28,15 +28,21 @@ export function ViewOrderModal() {
           </div>
           <div>
             <span className="font-semibold">Status:</span>{' '}
-            <Badge variant={
-              selected.status === 'COMPLETED' ? 'default' :
-              selected.status === 'PENDING' ? 'secondary' : 'destructive'
-            }>
+            <Badge
+              variant={
+                selected.status === 'COMPLETED'
+                  ? 'default'
+                  : selected.status === 'PENDING'
+                    ? 'secondary'
+                    : 'destructive'
+              }
+            >
               {selected.status}
             </Badge>
           </div>
           <div>
-            <span className="font-semibold">Total:</span> R$ {selected.total.toFixed(2)}
+            <span className="font-semibold">Total:</span> R${' '}
+            {selected.total.toFixed(2)}
           </div>
           <div>
             <span className="font-semibold">Data:</span>{' '}
@@ -44,7 +50,7 @@ export function ViewOrderModal() {
           </div>
 
           <div>
-            <span className="font-semibold block mb-2">Produtos:</span>
+            <span className="mb-2 block font-semibold">Produtos:</span>
             <ScrollArea className="h-48 pr-2">
               <ul className="space-y-2">
                 {selected.products.map((item) => (

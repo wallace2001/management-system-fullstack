@@ -23,6 +23,7 @@ import {
 import Link from 'next/link';
 import { RegisterFormValues, registerSchema } from '../schemas/register-schema';
 import { useRegisterMutation } from '../hooks/use-register-mutation';
+import { handleError } from '@/modules/errors/request-error';
 
 export function RegisterForm() {
   const registerMutation = useRegisterMutation();
@@ -37,7 +38,9 @@ export function RegisterForm() {
   });
 
   const onSubmit = (values: RegisterFormValues) => {
-    registerMutation.mutate(values);
+    registerMutation.mutate(values, {
+      onError: handleError,
+    });
   };
 
   return (

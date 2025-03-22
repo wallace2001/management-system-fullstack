@@ -3,7 +3,6 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { RegisterCredentials } from '../types/register';
 import { register } from '../services/register';
-import { handleError } from '@/modules/errors/request-error';
 
 export function useRegisterMutation() {
   const router = useRouter();
@@ -17,6 +16,5 @@ export function useRegisterMutation() {
         'Registro efetuado com sucesso! Agora você pode fazer login.',
       );
     },
-    onError: handleError,
   });
 }

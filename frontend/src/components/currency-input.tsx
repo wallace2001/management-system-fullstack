@@ -9,7 +9,11 @@ type CurrencyInputProps = {
   placeholder?: string;
 };
 
-export function CurrencyInput({ value, onChange, placeholder }: CurrencyInputProps) {
+export function CurrencyInput({
+  value,
+  onChange,
+  placeholder,
+}: CurrencyInputProps) {
   const [formatted, setFormatted] = useState('');
 
   useEffect(() => {
