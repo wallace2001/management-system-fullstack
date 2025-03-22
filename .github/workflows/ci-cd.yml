@@ -1,23 +1,9 @@
-name: CI/CD
-
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         project: [frontend, backend]
-
-    defaults:
-      run:
-        working-directory: ${{ matrix.project }}
 
     steps:
       - name: Checkout código
@@ -28,13 +14,13 @@ jobs:
         with:
           node-version: 18
           cache: 'yarn'
-          cache-dependency-path: ${{ matrix.project }}/yarn.lock
+          cache-dependency-path: yarn.lock
 
       - name: Instalar dependências
         run: yarn install --frozen-lockfile
 
-      - name: Rodar testes
-        run: yarn test
-
-      - name: Build do projeto
-        run: yarn build
+      - name: Build e test
+        run: |
+          cd ${{ matrix.project }}
+          yarn build
+          yarn test
