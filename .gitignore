@@ -1,0 +1,79 @@
+# ==========================
+# ROOT CONFIG
+# ==========================
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor folders
+.idea/
+.vscode/
+*.sublime-workspace
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# npm & yarn
+node_modules/
+package-lock.json
+yarn.lock
+
+# Temp folders
+.temp/
+.tmp/
+.cache/
+.pnpm-debug.log*
+
+# Diagnostic reports
+report.[0-9]*.json
+*.pid
+*.pid.lock
+
+# ==========================
+# FRONTEND (Next.js)
+# ==========================
+
+/frontend/.next/
+/frontend/out/
+/frontend/coverage/
+/frontend/.turbo/
+/frontend/.vercel/
+/frontend/next-env.d.ts
+/frontend/.eslintcache
+/frontend/public/build/
+/frontend/dist/
+/frontend/build/
+
+# Yarn v2+
+/frontend/.pnp*
+/frontend/.yarn/*
+!/frontend/.yarn/patches
+!/frontend/.yarn/plugins
+!/frontend/.yarn/releases
+!/frontend/.yarn/versions
+
+# ==========================
+# BACKEND (NestJS + Prisma)
+# ==========================
+
+/backend/dist/
+/backend/node_modules/
+/backend/coverage/
+/backend/prisma/*.db
+/backend/prisma/migrations/*
+!/backend/prisma/schema.prisma
+/backend/*.tsbuildinfo
+/backend/.eslintcache
+/backend/.nestjs-cli.json
+/backend/.turbo

@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  frontend:
+    build: ./frontend
+    container_name: nextjs-app
+    environment:
+      - NEXT_PUBLIC_API_URL=/api
+      - NEXT_PUBLIC_API_URL_SERVER=http://api:3000/
+    ports:
+      - '3001:3001'
+    depends_on:
+      - api
+    networks:
+      - app
+  api:
+    build: ./backend
+    container_name: nestjs-app
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/management
+      - JWT_SECRET=my-secret
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "yarn prisma db push && yarn start:prod"
+    networks:
+      - app
+
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: management
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "myuser"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    networks:
+      - app
+networks:
+  app:
+    driver: bridge
