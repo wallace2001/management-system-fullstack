@@ -6,6 +6,6 @@ import { Order } from '@/modules/shared/types/order';
 export function useOrdersQuery() {
   return useQuery({
     queryKey: ['orders'],
-    queryFn: async () => api.get('orders').json<Order[]>(),
+    queryFn: async () => (await api.get('orders')).data as Order[],
   });
 }
