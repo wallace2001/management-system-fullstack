@@ -1,139 +1,208 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+import * as request from 'supertest';
+import { AppModule } from 'src/app.module';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { OrderStatus } from '@prisma/client';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { OrdersService } from '../../orders/orders.service';
-import { CreateOrderDto } from '../../orders/dto/create-order.dto';
-import { OrdersRepository } from '../../orders/orders.repository';
-import { FindOrdersDto } from '../../orders/dto/find-orders.dto';
 
-describe('OrdersService', () => {
-  let service: OrdersService;
-  let repositoryMock: Record<keyof OrdersRepository, jest.Mock>;
+describe('ProductsController & OrdersController', () => {
+  let app: INestApplication;
+  let prisma: PrismaService;
+  let productId: string;
+  let token: string;
+  let username: string;
+  let orderId: string;
 
-  beforeEach(async () => {
-    repositoryMock = {
-      findProductsByIds: jest.fn(),
-      updateProductStock: jest.fn(),
-      updateStatus: jest.fn(),
-      createOrder: jest.fn(),
-      findAllOrders: jest.fn(),
-      findOrderById: jest.fn(),
-      updateStock: jest.fn(),
-      delete: jest.fn(),
-    };
-
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        OrdersService,
-        { provide: OrdersRepository, useValue: repositoryMock },
-      ],
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule],
     }).compile();
 
-    service = module.get<OrdersService>(OrdersService);
-    jest.clearAllMocks();
+    app = moduleRef.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+    await app.init();
+
+    prisma = app.get(PrismaService);
   });
 
-  it('should conclude an order and update product stock', async () => {
-    const orderId = 'o1';
-
-    repositoryMock.findOrderById.mockResolvedValue({
-      id: orderId,
-      status: OrderStatus.PENDING,
-      total: 100,
-      createdAt: new Date(),
-      userId: 'user123',
-      products: [{ productId: 'p1', quantity: 2 }],
-    });
-
-    repositoryMock.updateStatus.mockResolvedValue({
-      id: orderId,
-      status: OrderStatus.COMPLETED,
-      total: 100,
-      createdAt: new Date(),
-      userId: 'user123',
-    });
-
-    repositoryMock.updateStock.mockResolvedValue({
-      id: 'p1',
-      stockQuantity: 8,
-    });
-
-    const result = await service.markAsCompleted(orderId);
-
-    expect(result['status']).toBe(OrderStatus.COMPLETED);
-    expect(repositoryMock.updateStatus).toHaveBeenCalledWith(
-      orderId,
-      OrderStatus.COMPLETED,
-    );
-    expect(repositoryMock.updateStock).toHaveBeenCalledWith('p1', -2);
+  afterAll(async () => {
+    await prisma.orderProduct.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.user.deleteMany({ where: { username } });
+    await app.close();
   });
 
-  it('should create an order successfully', async () => {
-    const dto: CreateOrderDto = {
-      products: { p1: 2 },
-      status: OrderStatus.PENDING,
-    };
-    const userId = 'u1';
+  beforeEach(async () => {
+    username = `testuser_${Date.now()}`;
 
-    repositoryMock.findProductsByIds.mockResolvedValue([
-      { id: 'p1', name: 'Mouse', price: 50, stockQuantity: 10 },
-    ]);
+    await prisma.orderProduct.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.user.deleteMany({ where: { username } });
 
-    repositoryMock.createOrder.mockResolvedValue({
-      id: 'o1',
-      total: 100,
-      status: dto.status,
-      userId,
-      products: [],
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({ username, password: 'testpass' });
+
+    await prisma.user.update({
+      where: { username },
+      data: { role: 'ADMIN' },
     });
 
-    const result = await service.create(dto, userId);
+    const loginRes = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ username, password: 'testpass' });
 
-    expect(result.total).toBe(100);
-    expect(repositoryMock.createOrder).toHaveBeenCalledWith({
-      total: 100,
-      status: dto.status,
-      userId,
-      products: [{ productId: 'p1', quantity: 2 }],
+    token = JSON.parse(loginRes.text)['access_token'];
+    expect(token).toBeDefined();
+
+    const product = await prisma.product.create({
+      data: {
+        name: 'Mouse',
+        category: 'Tech',
+        description: 'Mouse testing',
+        price: 25,
+        stockQuantity: 10,
+      },
     });
+
+    productId = product.id;
   });
 
-  it('should throw if product stock is insufficient (COMPLETED)', async () => {
-    const dto: CreateOrderDto = {
-      products: { p1: 5 },
-      status: OrderStatus.COMPLETED,
-    };
-
-    repositoryMock.findProductsByIds.mockResolvedValue([
-      { id: 'p1', name: 'Keyboard', price: 100, stockQuantity: 2 },
-    ]);
-
-    await expect(service.create(dto, 'u1')).rejects.toThrow(
-      BadRequestException,
-    );
+  afterEach(async () => {
+    await prisma.orderProduct.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.user.deleteMany({ where: { username } });
   });
 
-  it('should throw if order not found on findOne', async () => {
-    repositoryMock.findOrderById.mockResolvedValue(null);
+  it('/GET products - retorna produtos paginados', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/products?page=1&limit=5')
+      .set('Authorization', `Bearer ${token}`);
 
-    await expect(service.findOne('invalid')).rejects.toThrow(NotFoundException);
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('data');
+    expect(res.body).toHaveProperty('totalItems');
+    expect(res.body).toHaveProperty('totalPages');
+    expect(res.body).toHaveProperty('currentPage');
+    expect(res.body).toHaveProperty('perPage');
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('should return paginated orders', async () => {
-    const pagination: FindOrdersDto = { page: 1, limit: 5 };
-    const fakeResult = {
-      data: [],
-      totalItems: 0,
-      totalPages: 0,
-      currentPage: 1,
-      perPage: 5,
-    };
+  it('/GET products/all - retorna todos os produtos sem paginação', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/products/all')
+      .set('Authorization', `Bearer ${token}`);
 
-    repositoryMock.findAllOrders.mockResolvedValue(fakeResult);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBeGreaterThanOrEqual(1);
+  });
 
-    const result = await service.findAll(pagination);
+  it('/GET products/:id - retorna um produto por ID', async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/products/${productId}`)
+      .set('Authorization', `Bearer ${token}`);
 
-    expect(result).toEqual(fakeResult);
-    expect(repositoryMock.findAllOrders).toHaveBeenCalledWith(pagination);
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('id', productId);
+  });
+
+  it('/GET products/:id - 404 para ID inexistente', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/products/invalid-id')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(404);
+  });
+
+  it('/PUT products/:id - atualiza um produto', async () => {
+    const res = await request(app.getHttpServer())
+      .put(`/products/${productId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Novo Nome', category: 'Nova', description: 'Nova desc', price: 99, stockQuantity: 99 });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('name', 'Novo Nome');
+  });
+
+  it('/PUT products/:id - falha com dados inválidos', async () => {
+    const res = await request(app.getHttpServer())
+      .put(`/products/${productId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: '', category: '', description: '', price: -10, stockQuantity: -5 });
+
+    expect(res.status).toBe(400);
+  });
+
+  it('/DELETE product - deve funcionar para ADMIN', async () => {
+    const res = await request(app.getHttpServer())
+      .delete(`/products/${productId}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('id', productId);
+  });
+
+  it('/POST orders - cria um pedido', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/orders')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ products: { [productId]: 2 }, status: OrderStatus.COMPLETED });
+
+    expect(res.status).toBe(201);
+    expect(res.body.total).toBe(50);
+    expect(res.body.userId).toBeDefined();
+    orderId = res.body.id;
+    expect(orderId).toBeDefined();
+  });
+
+  it('/GET order by id - retorna pedido por ID', async () => {
+    const user = await prisma.user.findUnique({ where: { username } });
+    const order = await prisma.order.create({
+      data: {
+        status: OrderStatus.PENDING,
+        total: 0,
+        userId: user!.id,
+        products: { create: [{ productId, quantity: 1 }] },
+      },
+    });
+
+    const res = await request(app.getHttpServer())
+      .get(`/orders/${order.id}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.id).toBe(order.id);
+    expect(res.body.userId).toBe(user!.id);
+  });
+
+  it('/GET orders - retorna pedidos paginados', async () => {
+    const user = await prisma.user.findUnique({ where: { username } });
+
+    for (let i = 0; i < 3; i++) {
+      await prisma.order.create({
+        data: {
+          status: OrderStatus.PENDING,
+          total: 30,
+          userId: user!.id,
+          products: { create: [{ productId, quantity: 1 }] },
+        },
+      });
+    }
+
+    const res = await request(app.getHttpServer())
+      .get('/orders?page=1&limit=2')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('data');
+    expect(res.body).toHaveProperty('totalItems');
+    expect(res.body).toHaveProperty('totalPages');
+    expect(res.body).toHaveProperty('currentPage');
+    expect(res.body.data.length).toBeLessThanOrEqual(2);
   });
 });
