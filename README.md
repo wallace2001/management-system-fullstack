@@ -150,7 +150,7 @@ yarn test      # Roda os testes
 |---------------|--------|-------------|----------------|
 | `/products`   | GET    | ✅          | ADMIN, USER    |
 | `/products`   | POST   | ✅          | ADMIN          |
-| `/orders`     | POST   | ✅          | USER           |
+| `/orders`     | POST   | ✅          | ADMIN          |
 | `/users`      | GET    | ✅          | ADMIN          |
 
 ---
