@@ -56,9 +56,15 @@ describe('LoginForm', () => {
     await userEvent.type(screen.getByPlaceholderText(/sua senha/i), '123456');
     await userEvent.click(screen.getByRole('button', { name: /entrar/i }));
 
-    expect(mockMutate).toHaveBeenCalledWith({
-      username: 'admin',
-      password: '123456',
-    });
+    expect(mockMutate).toHaveBeenCalledWith(
+      {
+        username: 'admin',
+        password: '123456',
+      },
+      expect.objectContaining({
+        onError: expect.any(Function),
+      })
+    );
+
   });
 });

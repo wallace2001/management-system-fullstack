@@ -7,7 +7,7 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   transformIgnorePatterns: [
-    '/node_modules/(?!ky|@?react|@?next|@?tanstack)',
+    '/node_modules/(?!ky)',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
