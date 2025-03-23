@@ -1,10 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { PlusCircle } from 'lucide-react';
 import { useUsers } from '@/modules/users/hooks/use-get-users';
 import { UsersTable } from '@/modules/users/components/users-table';
 import { EditUserModal } from '@/modules/users/components/update-modal';
@@ -23,9 +21,6 @@ export default function UsersPage() {
       <ConfirmDeleteUserModal />
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Usuários</h1>
-        <Button variant="default" className="flex items-center gap-2">
-          <PlusCircle className="h-4 w-4" /> Novo Usuário
-        </Button>
       </div>
 
       <div className="mb-4">
