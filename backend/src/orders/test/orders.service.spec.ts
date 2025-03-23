@@ -4,6 +4,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { OrdersService } from '../../orders/orders.service';
 import { CreateOrderDto } from '../../orders/dto/create-order.dto';
 import { OrdersRepository } from '../../orders/orders.repository';
+import { FindOrdersDto } from '../../orders/dto/find-orders.dto';
 
 describe('OrdersService', () => {
   let service: OrdersService;
@@ -59,12 +60,7 @@ describe('OrdersService', () => {
 
     const result = await service.markAsCompleted(orderId);
 
-    if ('status' in result) {
-      expect(result.status).toBe(OrderStatus.COMPLETED);
-    } else {
-      throw new Error('Unexpected return type');
-    }
-
+    expect(result['status']).toBe(OrderStatus.COMPLETED);
     expect(repositoryMock.updateStatus).toHaveBeenCalledWith(
       orderId,
       OrderStatus.COMPLETED,
@@ -119,6 +115,25 @@ describe('OrdersService', () => {
 
   it('should throw if order not found on findOne', async () => {
     repositoryMock.findOrderById.mockResolvedValue(null);
+
     await expect(service.findOne('invalid')).rejects.toThrow(NotFoundException);
+  });
+
+  it('should return paginated orders', async () => {
+    const pagination: FindOrdersDto = { page: 1, limit: 5 };
+    const fakeResult = {
+      data: [],
+      totalItems: 0,
+      totalPages: 0,
+      currentPage: 1,
+      perPage: 5,
+    };
+
+    repositoryMock.findAllOrders.mockResolvedValue(fakeResult);
+
+    const result = await service.findAll(pagination);
+
+    expect(result).toEqual(fakeResult);
+    expect(repositoryMock.findAllOrders).toHaveBeenCalledWith(pagination);
   });
 });

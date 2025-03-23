@@ -2,6 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OrderStatus, Product } from '@prisma/client';
+import { FindOrdersDto } from './dto/find-orders.dto';
 
 @Injectable()
 export class OrdersRepository {
@@ -43,13 +44,34 @@ export class OrdersRepository {
     });
   }
 
-  async findAllOrders() {
-    return this.prisma.order.findMany({
-      include: {
-        user: true,
-        products: { include: { product: true } },
-      },
-    });
+  async findAllOrders({
+    page = 1,
+    limit = 10,
+  }: FindOrdersDto) {
+    const skip = (page - 1) * limit;
+
+    const [totalItems, data] = await Promise.all([
+      this.prisma.order.count(),
+      this.prisma.order.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          user: true,
+          products: { include: { product: true } },
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      data,
+      totalItems,
+      totalPages,
+      currentPage: page,
+      perPage: limit,
+    };
   }
 
   async findOrderById(id: string) {

@@ -35,6 +35,7 @@ describe('ProductsController', () => {
     await prisma.product.deleteMany();
     await prisma.user.deleteMany({ where: { username } });
 
+    // Criação do usuário e login
     await request(app.getHttpServer())
       .post('/auth/register')
       .send({ username, password: 'testpass' });
@@ -49,7 +50,6 @@ describe('ProductsController', () => {
       .send({ username, password: 'testpass' });
 
     token = JSON.parse(loginRes.text)['access_token'];
-
     expect(token).toBeDefined();
 
     const product = await prisma.product.create({
@@ -72,27 +72,27 @@ describe('ProductsController', () => {
     await prisma.user.deleteMany({ where: { username } });
   });
 
-  it('/GET products', async () => {
+  it('/GET products - retorna produtos paginados', async () => {
     const res = await request(app.getHttpServer())
-      .get('/products')
+      .get('/products?page=1&limit=5')
       .set('Authorization', `Bearer ${token}`);
 
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBeGreaterThanOrEqual(1);
+    expect(res.body).toHaveProperty('data');
+    expect(res.body).toHaveProperty('totalItems');
+    expect(res.body).toHaveProperty('totalPages');
+    expect(res.body).toHaveProperty('currentPage');
+    expect(res.body).toHaveProperty('perPage');
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('/DELETE product - should fail for USER role', async () => {
+  it('/DELETE product - deve funcionar para ADMIN', async () => {
     const res = await request(app.getHttpServer())
       .delete(`/products/${productId}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect([200, 403]).toContain(res.status);
-
-    if (res.status === 403) {
-      expect(res.body.message).toMatch(/forbidden/i);
-    } else {
-      expect(res.body.id).toBe(productId);
-    }
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('id', productId);
   });
 });

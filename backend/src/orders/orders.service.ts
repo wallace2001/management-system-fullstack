@@ -6,6 +6,7 @@ import {
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from '@prisma/client';
 import { OrdersRepository } from './orders.repository';
+import { FindOrdersDto } from './dto/find-orders.dto';
 
 @Injectable()
 export class OrdersService {
@@ -69,9 +70,10 @@ export class OrdersService {
     return this.repo.updateStatus(id, OrderStatus.COMPLETED);
   }
 
-  async findAll() {
-    return this.repo.findAllOrders();
+  async findAll(params: FindOrdersDto) {
+    return this.repo.findAllOrders(params);
   }
+
 
   async delete(id: string) {
     const order = await this.repo.findOrderById(id);

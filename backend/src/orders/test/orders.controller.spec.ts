@@ -104,4 +104,33 @@ describe('OrdersController', () => {
     expect(res.body.id).toBe(order.id);
     expect(res.body.userId).toBe(user!.id);
   });
+
+  it('/GET orders - should return paginated list of orders', async () => {
+    const user = await prisma.user.findUnique({ where: { username: 'testuser' } });
+
+    // Cria 3 pedidos para o usuário logado
+    for (let i = 0; i < 3; i++) {
+      await prisma.order.create({
+        data: {
+          status: OrderStatus.PENDING,
+          total: 30,
+          userId: user!.id,
+          products: {
+            create: [{ productId, quantity: 1 }],
+          },
+        },
+      });
+    }
+
+    const res = await request(app.getHttpServer())
+      .get('/orders?page=1&limit=2')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('data');
+    expect(res.body).toHaveProperty('totalItems');
+    expect(res.body).toHaveProperty('totalPages');
+    expect(res.body).toHaveProperty('currentPage');
+    expect(res.body.data.length).toBeLessThanOrEqual(2);
+  });
 });

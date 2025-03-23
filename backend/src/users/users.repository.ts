@@ -1,7 +1,7 @@
 // src/users/users.repository.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class UsersRepository {
@@ -31,8 +31,50 @@ export class UsersRepository {
     });
   }
 
-  async findAll(): Promise<Partial<User[]> | null> {
-    return this.prisma.user.findMany();
+  async findAll({
+    page = 1,
+    limit = 10,
+    name,
+  }: {
+    page?: number;
+    limit?: number;
+    name?: string;
+  }): Promise<{
+    data: Partial<User[]>;
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+    perPage: number;
+  }> {
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.UserWhereInput | undefined = name
+      ? {
+          username: {
+            contains: name,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        }
+      : undefined;
+
+    const [totalItems, data] = await Promise.all([
+      this.prisma.user.count({ where }),
+      this.prisma.user.findMany({
+        where,
+        skip,
+        take: limit,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      data,
+      totalItems,
+      totalPages,
+      currentPage: page,
+      perPage: limit,
+    };
   }
 
   async delete(id: string): Promise<User> {

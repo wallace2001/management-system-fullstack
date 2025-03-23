@@ -10,14 +10,16 @@ import {
   HttpCode,
   HttpStatus,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { RequestWithUser } from 'src/auth/types/request-with-user';
+import { FindOrdersDto } from './dto/find-orders.dto';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -35,9 +37,9 @@ export class OrdersController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all orders' })
-  findAll() {
-    return this.ordersService.findAll();
+  @ApiOperation({ summary: 'List all orders with pagination and filter by user' })
+  findAll(@Query() query: FindOrdersDto) {
+    return this.ordersService.findAll(query);
   }
 
   @Get(':id')

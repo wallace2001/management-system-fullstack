@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Req, Delete, Param, ForbiddenException, NotFoundException, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Req, Delete, Param, ForbiddenException, NotFoundException, Put, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { UsersService } from 'src/users/users.service';
@@ -9,6 +9,7 @@ import { RegisterDto } from './dto/register.dto';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './guards/roles.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FindUsersQueryDto } from './dto/find-users-query.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -82,9 +83,14 @@ export class AuthController {
 
   @Get('all')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN') // ✅ Apenas ADMIN pode listar usuários
+  @Roles('ADMIN')
   @ApiBearerAuth()
-  async getAllUsers() {
-    return this.usersService.findAll();
+  async getAllUsers(@Query() query: FindUsersQueryDto) {
+    return this.usersService.findAll({
+      page: Number(query.page) || 1,
+      limit: Number(query.limit) || 10,
+      name: query.name,
+    });
   }
+
 }

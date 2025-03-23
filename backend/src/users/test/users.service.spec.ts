@@ -13,6 +13,7 @@ describe('UsersService', () => {
       create: jest.fn(),
       findByUsername: jest.fn(),
       findById: jest.fn(),
+      findAll: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -46,6 +47,37 @@ describe('UsersService', () => {
     expect(user.username).toBe('unittest');
     expect(user.password).not.toBe('password123');
     expect(await bcrypt.compare('password123', user.password)).toBe(true);
+  });
+
+  it('should return paginated users with name filter', async () => {
+    const mockUsers = [
+      { id: '1', username: 'alice', role: 'USER', createdAt: new Date() },
+      { id: '2', username: 'alisson', role: 'USER', createdAt: new Date() },
+    ];
+
+    usersRepository.findAll = jest.fn().mockResolvedValue({
+      data: mockUsers,
+      totalItems: 2,
+      totalPages: 1,
+      currentPage: 1,
+      perPage: 10,
+    });
+
+    const result = await service.findAll({ page: 1, limit: 10, name: 'ali' });
+
+    expect(result).toEqual({
+      data: mockUsers,
+      totalItems: 2,
+      totalPages: 1,
+      currentPage: 1,
+      perPage: 10,
+    });
+
+    expect(usersRepository.findAll).toHaveBeenCalledWith({
+      page: 1,
+      limit: 10,
+      name: 'ali',
+    });
   });
 
   it('should find a user by username', async () => {

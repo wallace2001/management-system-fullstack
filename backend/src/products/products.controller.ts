@@ -7,14 +7,16 @@ import {
   Delete,
   Put,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
+import { FindAllProductsDto } from './dto/find-all-products.dto';
 
 @ApiTags('Products')
 @ApiBearerAuth()
@@ -30,7 +32,16 @@ export class ProductsController {
     return this.productsService.create(dto);
   }
 
+
   @Get()
+  @Roles('ADMIN', 'USER')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'List all products with pagination and filter' })
+  findAllPaginated(@Query() query: FindAllProductsDto) {
+    return this.productsService.findAllPaginated(query);
+  }
+
+  @Get('/all')
   @Roles('ADMIN', 'USER')
   @ApiOperation({ summary: 'List all products' })
   findAll() {

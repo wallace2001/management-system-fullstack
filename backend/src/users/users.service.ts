@@ -49,7 +49,8 @@ export class UsersService {
     return user;
   }
 
-  async findAll() {
-    return await this.repo.findAll();
+  async findAll(params: { page: number; limit: number; name?: string }) {
+    return await this.repo.findAll(params);
   }
+
 }

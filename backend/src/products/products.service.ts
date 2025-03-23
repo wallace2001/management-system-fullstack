@@ -3,6 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from '@prisma/client';
 import { ProductsRepository } from './products.repository';
+import { FindAllProductsDto } from './dto/find-all-products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -12,7 +13,11 @@ export class ProductsService {
     return this.repo.create(data);
   }
 
-  async findAll(): Promise<Product[]> {
+  async findAllPaginated(params: FindAllProductsDto) {
+    return this.repo.findAllPaginated(params);
+  }
+
+  async findAll() {
     return this.repo.findAll();
   }
 

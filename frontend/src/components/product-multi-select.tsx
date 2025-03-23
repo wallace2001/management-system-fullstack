@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useEffect, useState } from 'react';
 import { Product } from '@/modules/shared/types/product';
-import { useProductsQuery } from '@/modules/products/hooks/use-get-products';
+import { useProductsGetAllQuery } from '@/modules/products/hooks/use-get-products-all';
 
 type ProductMultiSelectProps = {
   value: Record<string, number>;
@@ -25,7 +25,7 @@ export function ProductMultiSelect({
   className,
   ...props
 }: ProductMultiSelectProps) {
-  const { data: products = [] } = useProductsQuery();
+  const { data: products = [] } = useProductsGetAllQuery();
   const [selectedId, setSelectedId] = useState('');
   const [quantity, setQuantity] = useState(1);
 
