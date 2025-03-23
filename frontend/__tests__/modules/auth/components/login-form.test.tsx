@@ -12,7 +12,7 @@ jest.mock('@/modules/auth/hooks/use-login-mutation', () => ({
   }),
 }));
 
-jest.mock('ky', () => ({
+jest.mock('axios', () => ({
   create: () => ({
     post: jest.fn(() => ({
       json: async () => ({ access_token: 'fake-token' }),

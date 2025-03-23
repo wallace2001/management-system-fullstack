@@ -1,14 +1,12 @@
-import { HTTPError } from 'ky';
+import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 
-export const handleError = async (
-  error: HTTPError<{ message: string }> | Error,
-) => {
+export const handleError = (error: unknown) => {
   let errorMessage = 'Tente novamente';
 
-  if (error instanceof HTTPError) {
-    const errorResponse = await error.response.json();
-    errorMessage = errorResponse?.message || errorMessage;
+  if (isAxiosError(error)) {
+    errorMessage =
+      error.response?.data?.message || error.response?.data?.error || errorMessage;
   } else if (error instanceof Error) {
     errorMessage = error.message;
   }

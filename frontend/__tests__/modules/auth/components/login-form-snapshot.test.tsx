@@ -1,4 +1,4 @@
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LoginForm } from '@/modules/auth/components/login-form';
 
@@ -13,14 +13,12 @@ describe('LoginForm Snapshot', () => {
   it('renderiza corretamente', () => {
     const queryClient = new QueryClient();
 
-    const tree = renderer
-      .create(
-        <QueryClientProvider client={queryClient}>
-          <LoginForm />
-        </QueryClientProvider>,
-      )
-      .toJSON();
+    const { container } = render(
+      <QueryClientProvider client={queryClient}>
+        <LoginForm />
+      </QueryClientProvider>
+    );
 
-    expect(tree).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

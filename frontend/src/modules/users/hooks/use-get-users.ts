@@ -7,7 +7,7 @@ export function useUsers() {
     queryKey: ['users'],
     queryFn: async () => {
       const response = await api.get('auth/all');
-      return response.json();
+      return response.data as Profile[];
     },
   });
 }

@@ -4,8 +4,8 @@ import { RegisterCredentials } from '../types/register';
 export async function register(values: RegisterCredentials) {
   return api
     .post('auth/register', {
-      json: values,
-      timeout: 1000 * 90, // 90s
+      ...values,
+    }, {
+      timeout: 1000 * 90,
     })
-    .json();
 }

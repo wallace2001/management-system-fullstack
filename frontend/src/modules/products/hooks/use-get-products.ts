@@ -7,7 +7,9 @@ export function useProductsQuery() {
   return useQuery<Product[]>({
     queryKey: ['products'],
     queryFn: async () => {
-      return api.get('products').json<Product[]>();
+      const products = (await api.get('products')).data;
+
+      return products;
     },
   });
 }

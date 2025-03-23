@@ -1,11 +1,11 @@
 import { TOKEN, USER_ID } from '@/constants/cookies';
 import { Profile } from '@/modules/shared/types/profile';
-import { HTTPError } from 'ky';
 import NextAuth, { CredentialsSignin } from 'next-auth';
 
 import Credentials from 'next-auth/providers/credentials';
 import { DefaultUser } from './auth';
-import { apiServer } from '@/services/api-server';
+import { api as apiServer } from '@/services/api-server';
+import { isAxiosError } from 'axios';
 
 type LoginResponse = {
   access_token: string;
@@ -30,34 +30,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         try {
           const loginData = await apiServer
-            .post<LoginResponse>('auth/login', {
-              json: credentials,
-            })
-            .json();
+            .post<LoginResponse>('auth/login', credentials);
 
           const profileData = await apiServer
             .get<Profile>('auth/me', {
               headers: {
-                Authorization: `Bearer ${loginData.access_token}`,
+                Authorization: `Bearer ${loginData.data.access_token}`,
               },
               timeout: 1000 * 120,
             })
-            .json();
 
           const { cookies } = await import('next/headers');
           const cookiesStore = await cookies();
-          cookiesStore.set(USER_ID, profileData.id);
-          cookiesStore.set(TOKEN, loginData.access_token);
+          cookiesStore.set(USER_ID, profileData.data.id);
+          cookiesStore.set(TOKEN, loginData.data.access_token);
 
           return {
-            ...profileData,
-            access_token: loginData.access_token,
+            ...profileData.data,
+            access_token: loginData.data.access_token,
           };
         } catch (error) {
           console.log(error);
-          if (error instanceof HTTPError) {
-            const response = await error.response.json();
-            throw new AuthError(response.message);
+          if (isAxiosError(error)) {
+            const responseMessage = error.response?.data?.message ?? 'Erro desconhecido';
+            throw new AuthError(responseMessage);
           }
 
           throw new AuthError('Não foi possível realizar o login.');

@@ -14,6 +14,8 @@ export default function UsersPage() {
   const [search, setSearch] = useState('');
   const { data, isLoading } = useUsers();
 
+  console.log('data: ', data);
+
   const filteredUsers = data?.filter((user) =>
     user.username.toLowerCase().includes(search.toLowerCase()),
   );
