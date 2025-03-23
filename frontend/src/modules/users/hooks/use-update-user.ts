@@ -14,10 +14,8 @@ export function useUpdateUserMutation() {
     }) => {
       const response = await api
         .put<Profile>(`auth/${data.id}`, {
-          json: {
-            username: data.username,
-            role: data.role,
-          },
+          username: data.username,
+          role: data.role,
         });
 
         return response.data;

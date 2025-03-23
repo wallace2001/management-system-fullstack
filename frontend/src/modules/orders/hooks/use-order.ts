@@ -10,7 +10,7 @@ export function useCreateOrder() {
 
   return useMutation({
     mutationFn: async (data: OrderFormValues) =>
-      (await api.post<Order[]>('orders', { json: data })).data,
+      (await api.post<Order[]>('orders', data)).data,
     onSuccess: () => {
       toast.success('Pedido criado com sucesso');
       queryClient.invalidateQueries({ queryKey: ['orders'] });
@@ -23,7 +23,7 @@ export function useUpdateOrder() {
 
   return useMutation({
     mutationFn: async (data: OrderFormValues) =>
-      (await api.put<Order>(`orders/${data.id}`, { json: data })).data,
+      (await api.put<Order>(`orders/${data.id}`, data)).data,
     onSuccess: () => {
       toast.success('Pedido atualizado com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['orders'] });

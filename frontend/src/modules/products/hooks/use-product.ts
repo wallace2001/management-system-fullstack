@@ -8,7 +8,7 @@ export function useCreateProduct() {
 
   return useMutation({
     mutationFn: async (data: Omit<Product, 'id'>) =>
-      (await api.post('products', { json: data })).data,
+      (await api.post('products', data)).data,
     onSuccess: () => {
       toast.success('Produto criado com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -21,7 +21,7 @@ export function useUpdateProduct() {
 
   return useMutation({
     mutationFn: async (data: Product) =>
-      (await api.put(`products/${data.id}`, { json: data })).data,
+      (await api.put(`products/${data.id}`, data)).data,
     onSuccess: () => {
       toast.success('Produto atualizado com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['products'] });
