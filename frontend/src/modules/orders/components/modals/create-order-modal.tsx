@@ -36,7 +36,6 @@ export function CreateOrderModal() {
   });
 
   const onSubmit = (values: OrderFormValues) => {
-    console.log(values);
     mutate(values, {
       onSuccess: () => {
         form.reset();

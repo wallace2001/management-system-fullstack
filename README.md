@@ -1,3 +1,4 @@
+
 # 🧩 Management System – Monorepo Fullstack
 
 Sistema completo para gerenciamento de produtos, pedidos e usuários, utilizando **Next.js no frontend** e **NestJS no backend**, com autenticação, testes, documentação e Docker.
@@ -73,8 +74,8 @@ docker-compose up --build
 | Swagger       | http://localhost:3000/api    |
 | PgAdmin       | http://localhost:8080        |
 
-> PgAdmin:  
-> Login: `admin@admin.com`  
+> PgAdmin:
+> Login: `admin@admin.com`
 > Senha: `admin`
 
 ---
@@ -185,6 +186,18 @@ http://localhost:3000/api
 
 ---
 
+## 🔄 CI/CD Automatizado
+
+Esse repositório possui **pipelines automatizadas com GitHub Actions** para:
+
+- 🔎 **Rodar testes no frontend e backend** a cada `push` ou `pull request` na branch `master`
+- 🛠️ **Build de produção** automatizado para ambos os projetos
+- 🐘 Banco de dados PostgreSQL com Docker para os testes e2e
+
+Os pipelines validam a aplicação antes de qualquer deploy.
+
+---
+
 ## 🐞 Problemas Comuns
 
 ### ❌ Prisma: `Can't reach database at db:5432`
@@ -209,7 +222,7 @@ http://localhost:3000/api
 
 ## 🤝 Contribua
 
-Sinta-se à vontade para abrir PRs, issues ou sugestões.  
+Sinta-se à vontade para abrir PRs, issues ou sugestões.
 Esse projeto é uma base sólida para sistemas administrativos em produção.
 
 ---
