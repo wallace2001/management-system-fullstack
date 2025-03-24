@@ -1,4 +1,3 @@
-// src/users/users.repository.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, User } from '@prisma/client';
@@ -81,7 +80,10 @@ export class UsersRepository {
     return this.prisma.user.delete({ where: { id } });
   }
 
-  async update(id: string, data: Partial<Pick<User, 'username' | 'role'>>): Promise<User> {
+  async update(
+    id: string,
+    data: Partial<Pick<User, 'username' | 'role'>>,
+  ): Promise<User> {
     return this.prisma.user.update({
       where: { id },
       data,

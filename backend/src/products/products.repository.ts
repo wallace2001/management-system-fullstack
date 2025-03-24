@@ -13,11 +13,7 @@ export class ProductsRepository {
     return this.prisma.product.create({ data });
   }
 
-  async findAllPaginated({
-    page = 1,
-    limit = 10,
-    name,
-  }: FindAllProductsDto) {
+  async findAllPaginated({ page = 1, limit = 10, name }: FindAllProductsDto) {
     const skip = (page - 1) * limit;
 
     const where: Prisma.ProductWhereInput | undefined = name

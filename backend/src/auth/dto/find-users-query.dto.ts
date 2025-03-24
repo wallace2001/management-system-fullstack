@@ -12,7 +12,10 @@ export class FindUsersQueryDto {
   @IsNumberString()
   limit?: string;
 
-  @ApiPropertyOptional({ example: 'admin', description: 'Filtro por nome de usuário' })
+  @ApiPropertyOptional({
+    example: 'admin',
+    description: 'Filtro por nome de usuário',
+  })
   @IsOptional()
   @IsString()
   name?: string;

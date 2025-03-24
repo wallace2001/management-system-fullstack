@@ -47,7 +47,9 @@ describe('LoginForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /entrar/i }));
 
     expect(await screen.findByText(/invalid username/i)).toBeInTheDocument();
-    expect(await screen.findByText(/password must be at least 6 characters/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/password must be at least 6 characters/i),
+    ).toBeInTheDocument();
   });
 
   it('envia formulário com valores válidos', async () => {
@@ -63,8 +65,7 @@ describe('LoginForm', () => {
       },
       expect.objectContaining({
         onError: expect.any(Function),
-      })
+      }),
     );
-
   });
 });

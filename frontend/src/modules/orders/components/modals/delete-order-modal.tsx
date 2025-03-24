@@ -29,17 +29,17 @@ export function DeleteOrderModal() {
     <Dialog open={deleteOpen} onOpenChange={close}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Confirmar exclusão</DialogTitle>
+          <DialogTitle>Cancelar pedido ?</DialogTitle>
         </DialogHeader>
 
-        <p>Tem certeza que deseja excluir este pedido?</p>
+        <p>Tem certeza que deseja cancelar este pedido?</p>
 
         <div className="flex justify-end gap-2 pt-4">
           <Button variant="outline" onClick={close}>
-            Cancelar
+            Sair
           </Button>
           <Button variant="destructive" onClick={onDelete} disabled={isPending}>
-            Excluir
+            Cancelar
           </Button>
         </div>
       </DialogContent>

@@ -10,17 +10,24 @@ type PaginatedOrdersResponse = {
   perPage: number;
 };
 
+export type Status = 'COMPLETED' | 'CANCELED' | 'PENDING';
+
 type UseOrdersQueryOptions = {
   page?: number;
   limit?: number;
+  status?: Status;
 };
 
-export function useOrdersQuery({ page = 1, limit = 10 }: UseOrdersQueryOptions) {
+export function useOrdersQuery({
+  page = 1,
+  limit = 10,
+  status,
+}: UseOrdersQueryOptions) {
   return useQuery<PaginatedOrdersResponse>({
-    queryKey: ['orders', page, limit],
+    queryKey: ['orders', page, limit, status],
     queryFn: async () => {
       const response = await api.get('orders', {
-        params: { page, limit },
+        params: { page, limit, status },
       });
       return response.data;
     },

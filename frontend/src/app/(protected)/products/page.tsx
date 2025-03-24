@@ -58,13 +58,13 @@ export default function ProductsPage() {
 
       <ProductsTable products={data?.data || []} isLoading={isLoading} />
 
-      <div className='w-full flex justify-start items-center'>
+      <div className="flex w-full items-center justify-start">
         {data?.currentPage && data.totalItems && (
-        <PaginationWrapper
-        currentPage={data.currentPage}
-        totalPages={data.totalPages}
-        onPageChange={setPage}
-      />
+          <PaginationWrapper
+            currentPage={data.currentPage}
+            totalPages={data.totalPages}
+            onPageChange={setPage}
+          />
         )}
       </div>
     </div>

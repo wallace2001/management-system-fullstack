@@ -117,7 +117,13 @@ describe('ProductsController', () => {
     const res = await request(app.getHttpServer())
       .put(`/products/${productId}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ name: 'Novo Nome', category: 'Nova', description: 'Nova desc', price: 99, stockQuantity: 99 });
+      .send({
+        name: 'Novo Nome',
+        category: 'Nova',
+        description: 'Nova desc',
+        price: 99,
+        stockQuantity: 99,
+      });
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('name', 'Novo Nome');
@@ -127,7 +133,13 @@ describe('ProductsController', () => {
     const res = await request(app.getHttpServer())
       .put(`/products/${productId}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ name: '', category: '', description: '', price: -10, stockQuantity: -5 });
+      .send({
+        name: '',
+        category: '',
+        description: '',
+        price: -10,
+        stockQuantity: -5,
+      });
 
     expect(res.status).toBe(400);
   });

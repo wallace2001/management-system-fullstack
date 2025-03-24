@@ -29,16 +29,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       authorize: async (credentials) => {
         try {
-          const loginData = await apiServer
-            .post<LoginResponse>('auth/login', credentials);
+          const loginData = await apiServer.post<LoginResponse>(
+            'auth/login',
+            credentials,
+          );
 
-          const profileData = await apiServer
-            .get<Profile>('auth/me', {
-              headers: {
-                Authorization: `Bearer ${loginData.data.access_token}`,
-              },
-              timeout: 1000 * 120,
-            })
+          const profileData = await apiServer.get<Profile>('auth/me', {
+            headers: {
+              Authorization: `Bearer ${loginData.data.access_token}`,
+            },
+            timeout: 1000 * 120,
+          });
 
           const { cookies } = await import('next/headers');
           const cookiesStore = await cookies();
@@ -52,7 +53,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         } catch (error) {
           console.log(error);
           if (isAxiosError(error)) {
-            const responseMessage = error.response?.data?.message ?? 'Erro desconhecido';
+            const responseMessage =
+              error.response?.data?.message ?? 'Erro desconhecido';
             throw new AuthError(responseMessage);
           }
 

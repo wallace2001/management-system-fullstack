@@ -44,17 +44,17 @@ export class OrdersRepository {
     });
   }
 
-  async findAllOrders({
-    page = 1,
-    limit = 10,
-  }: FindOrdersDto) {
+  async findAllOrders({ page = 1, limit = 10, status }: FindOrdersDto) {
     const skip = (page - 1) * limit;
 
+    const where = status ? { status } : undefined;
+
     const [totalItems, data] = await Promise.all([
-      this.prisma.order.count(),
+      this.prisma.order.count({ where }),
       this.prisma.order.findMany({
         skip,
         take: limit,
+        where,
         orderBy: { createdAt: 'desc' },
         include: {
           user: true,
@@ -85,12 +85,20 @@ export class OrdersRepository {
   }
 
   async delete(id: string) {
-    await this.prisma.orderProduct.deleteMany({
-      where: { orderId: id },
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: { products: true },
     });
 
-    return this.prisma.order.delete({
+    if (!order) return null;
+
+    if (order.status === OrderStatus.COMPLETED) {
+      throw new Error('Cannot cancel a completed order');
+    }
+
+    return this.prisma.order.update({
       where: { id },
+      data: { status: OrderStatus.CANCELED },
     });
   }
 

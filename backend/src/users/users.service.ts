@@ -35,7 +35,10 @@ export class UsersService {
     return this.repo.delete(id);
   }
 
-  async updateUser(id: string, data: { username?: string; role?: 'ADMIN' | 'USER' }) {
+  async updateUser(
+    id: string,
+    data: { username?: string; role?: 'ADMIN' | 'USER' },
+  ) {
     return this.repo.update(id, data);
   }
 
@@ -52,5 +55,4 @@ export class UsersService {
   async findAll(params: { page: number; limit: number; name?: string }) {
     return await this.repo.findAll(params);
   }
-
 }

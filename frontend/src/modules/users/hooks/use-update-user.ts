@@ -12,13 +12,12 @@ export function useUpdateUserMutation() {
       username: string;
       role: 'ADMIN' | 'USER';
     }) => {
-      const response = await api
-        .put<Profile>(`auth/${data.id}`, {
-          username: data.username,
-          role: data.role,
-        });
+      const response = await api.put<Profile>(`auth/${data.id}`, {
+        username: data.username,
+        role: data.role,
+      });
 
-        return response.data;
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Pagination,
@@ -8,16 +8,20 @@ import {
   PaginationNext,
   PaginationLink,
   PaginationEllipsis,
-} from '@/components/ui/pagination'
+} from '@/components/ui/pagination';
 
 type Props = {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-}
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+};
 
-export function PaginationWrapper({ currentPage, totalPages, onPageChange }: Props) {
-  const pages = getPages(currentPage, totalPages)
+export function PaginationWrapper({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: Props) {
+  const pages = getPages(currentPage, totalPages);
 
   return (
     <Pagination className="mt-4">
@@ -52,12 +56,12 @@ export function PaginationWrapper({ currentPage, totalPages, onPageChange }: Pro
         </PaginationItem>
       </PaginationContent>
     </Pagination>
-  )
+  );
 }
 
 function getPages(current: number, total: number): (number | string)[] {
-  const delta = 2
-  const pages: (number | string)[] = []
+  const delta = 2;
+  const pages: (number | string)[] = [];
 
   for (let i = 1; i <= total; i++) {
     if (
@@ -65,11 +69,11 @@ function getPages(current: number, total: number): (number | string)[] {
       i === total ||
       (i >= current - delta && i <= current + delta)
     ) {
-      pages.push(i)
+      pages.push(i);
     } else if (pages[pages.length - 1] !== '...') {
-      pages.push('...')
+      pages.push('...');
     }
   }
 
-  return pages
+  return pages;
 }

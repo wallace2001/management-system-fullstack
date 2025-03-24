@@ -2,10 +2,13 @@ import { api } from '@/services/api'; // Presumindo que você tem um cliente `ap
 import { RegisterCredentials } from '../types/register';
 
 export async function register(values: RegisterCredentials) {
-  return api
-    .post('auth/register', {
+  return api.post(
+    'auth/register',
+    {
       ...values,
-    }, {
+    },
+    {
       timeout: 1000 * 90,
-    })
+    },
+  );
 }

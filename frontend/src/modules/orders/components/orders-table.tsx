@@ -11,15 +11,23 @@ import {
 import { Button } from '@/components/ui/button';
 import { Check, Trash2, Eye, Pencil, PackageX } from 'lucide-react';
 import { useOrdersModal } from '../store/use-orders-modals-store';
-import { useOrdersQuery } from '../hooks/use-orders-query';
+import { Status, useOrdersQuery } from '../hooks/use-orders-query';
 import { useUpdateOrderStatus } from '../hooks/use-order';
 import { useState } from 'react';
 import { PaginationWrapper } from '@/components/pagination-wrapper';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export function OrdersTable() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useOrdersQuery({ page });
+  const [status, setStatus] = useState<Status | undefined>();
+  const { data, isLoading } = useOrdersQuery({ page, status });
   const completeMutation = useUpdateOrderStatus();
   const { openDelete, openEdit, openDetail } = useOrdersModal();
 
@@ -28,13 +36,32 @@ export function OrdersTable() {
 
   return (
     <>
-{isLoading ? (
-  <div className="p-6 space-y-4">
-    {[...Array(5)].map((_, i) => (
-      <Skeleton key={i} className="h-12 w-full rounded-md" />
-    ))}
-  </div>
-) : hasOrders ? (
+      <div className="mb-4 flex items-center justify-between">
+        <Select
+          value={status}
+          onValueChange={(value) => {
+            setStatus(value === 'ALL' ? undefined : (value as Status));
+            setPage(1);
+          }}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filtrar por status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">Todos</SelectItem>
+            <SelectItem value="PENDING">Pendente</SelectItem>
+            <SelectItem value="COMPLETED">Concluído</SelectItem>
+            <SelectItem value="CANCELED">Cancelado</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      {isLoading ? (
+        <div className="space-y-4 p-6">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-12 w-full rounded-md" />
+          ))}
+        </div>
+      ) : hasOrders ? (
         <>
           <Table>
             <TableHeader>
@@ -47,54 +74,59 @@ export function OrdersTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {orders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell>{order.id.slice(0, 8)}...</TableCell>
-                  <TableCell>{order.status}</TableCell>
-                  <TableCell>R$ {order.total.toFixed(2)}</TableCell>
-                  <TableCell>
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="space-x-2 text-right">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => openDetail(order)}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      disabled={order.status === 'COMPLETED'}
-                      variant="outline"
-                      onClick={() => openEdit(order)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={order.status === 'COMPLETED'}
-                      className={
-                        order.status === 'COMPLETED'
-                          ? 'border-green-600 text-green-600 hover:bg-green-50'
-                          : ''
-                      }
-                      onClick={() => completeMutation.mutate(order.id)}
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      disabled={order.status === 'COMPLETED'}
-                      onClick={() => openDelete(order)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {orders.map((order) => {
+                const idDisabled =
+                  order.status === 'COMPLETED' || order.status === 'CANCELED';
+
+                return (
+                  <TableRow key={order.id}>
+                    <TableCell>{order.id.slice(0, 8)}...</TableCell>
+                    <TableCell>{order.status}</TableCell>
+                    <TableCell>R$ {order.total.toFixed(2)}</TableCell>
+                    <TableCell>
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="space-x-2 text-right">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openDetail(order)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        disabled={idDisabled}
+                        variant="outline"
+                        onClick={() => openEdit(order)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={idDisabled}
+                        className={
+                          order.status === 'COMPLETED'
+                            ? 'border-green-600 text-green-600 hover:bg-green-50'
+                            : ''
+                        }
+                        onClick={() => completeMutation.mutate(order.id)}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        disabled={idDisabled}
+                        onClick={() => openDelete(order)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
 

@@ -6,7 +6,9 @@ export const handleError = (error: unknown) => {
 
   if (isAxiosError(error)) {
     errorMessage =
-      error.response?.data?.message || error.response?.data?.error || errorMessage;
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      errorMessage;
   } else if (error instanceof Error) {
     errorMessage = error.message;
   }

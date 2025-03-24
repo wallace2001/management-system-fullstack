@@ -14,7 +14,12 @@ import {
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
@@ -37,7 +42,9 @@ export class OrdersController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all orders with pagination and filter by user' })
+  @ApiOperation({
+    summary: 'List all orders with pagination and filter by user',
+  })
   findAll(@Query() query: FindOrdersDto) {
     return this.ordersService.findAll(query);
   }
@@ -56,9 +63,9 @@ export class OrdersController {
   }
 
   @Delete(':id')
-@HttpCode(HttpStatus.NO_CONTENT)
-@ApiOperation({ summary: 'Delete an order by ID' })
-async delete(@Param('id') id: string) {
-  return this.ordersService.delete(id);
-}
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Cancel an order if not completed' })
+  async delete(@Param('id') id: string) {
+    return this.ordersService.delete(id);
+  }
 }

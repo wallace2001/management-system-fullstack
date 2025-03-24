@@ -33,8 +33,7 @@ export function useDeleteProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) =>
-      (await api.delete(`products/${id}`)).data,
+    mutationFn: async (id: string) => (await api.delete(`products/${id}`)).data,
     onSuccess: () => {
       toast.success('Produto excluído com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['products'] });

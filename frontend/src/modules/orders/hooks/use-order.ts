@@ -4,6 +4,7 @@ import { api } from '@/services/api';
 import { toast } from 'sonner';
 import { OrderFormValues } from '../schemas/order-schema';
 import { Order } from '@/modules/shared/types/order';
+import { handleError } from '@/modules/errors/request-error';
 
 export function useCreateOrder() {
   const queryClient = useQueryClient();
@@ -41,6 +42,7 @@ export function useUpdateOrderStatus() {
       toast.success('Pedido marcado como concluído');
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
+    onError: handleError,
   });
 }
 
@@ -48,10 +50,9 @@ export function useDeleteOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) =>
-      (await api.delete(`orders/${id}`)).data,
+    mutationFn: async (id: string) => (await api.delete(`orders/${id}`)).data,
     onSuccess: () => {
-      toast.success('Pedido deletado com sucesso');
+      toast.success('Pedido cancelado com sucesso');
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
   });

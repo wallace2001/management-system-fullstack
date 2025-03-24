@@ -1,4 +1,17 @@
-import { Controller, Post, Body, Get, UseGuards, Req, Delete, Param, ForbiddenException, NotFoundException, Put, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Req,
+  Delete,
+  Param,
+  ForbiddenException,
+  NotFoundException,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { UsersService } from 'src/users/users.service';
@@ -22,10 +35,7 @@ export class AuthController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
-  async deleteUser(
-    @Param('id') id: string,
-    @Req() req: RequestWithUser,
-  ) {
+  async deleteUser(@Param('id') id: string, @Req() req: RequestWithUser) {
     if (req.user.userId === id) {
       throw new ForbiddenException('You cannot delete yourself');
     }
@@ -42,10 +52,7 @@ export class AuthController {
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
-  async updateUser(
-    @Param('id') id: string,
-    @Body() dto: UpdateUserDto,
-  ) {
+  async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     const user = await this.usersService.findById(id);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -92,5 +99,4 @@ export class AuthController {
       name: query.name,
     });
   }
-
 }

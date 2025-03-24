@@ -14,6 +14,13 @@ export class OrdersService {
 
   async create(dto: CreateOrderDto, userId: string) {
     const productIds = Object.keys(dto.products);
+
+    if (!productIds.length) {
+      throw new BadRequestException(
+        'At least one product is required to create an order.',
+      );
+    }
+
     const products = await this.repo.findProductsByIds(productIds);
 
     if (products.length !== productIds.length) {
@@ -63,6 +70,22 @@ export class OrdersService {
       return { message: 'Order is already completed' };
     }
 
+    const productIds = order.products.map((item) => item.productId);
+    const products = await this.repo.findProductsByIds(productIds);
+
+    for (const item of order.products) {
+      const product = products.find((p) => p.id === item.productId);
+      if (!product) {
+        throw new NotFoundException(`Product ${item.productId} not found.`);
+      }
+
+      if (product.stockQuantity < item.quantity) {
+        throw new BadRequestException(
+          `Not enough stock for product ${product.name}.`,
+        );
+      }
+    }
+
     for (const item of order.products) {
       await this.repo.updateStock(item.productId, -item.quantity);
     }
@@ -74,7 +97,6 @@ export class OrdersService {
     return this.repo.findAllOrders(params);
   }
 
-
   async delete(id: string) {
     const order = await this.repo.findOrderById(id);
 
@@ -82,7 +104,11 @@ export class OrdersService {
       throw new NotFoundException('Order not found');
     }
 
-    return this.repo.delete(id);
+    if (order.status === OrderStatus.COMPLETED) {
+      throw new BadRequestException('Cannot cancel a completed order.');
+    }
+
+    return this.repo.updateStatus(id, OrderStatus.CANCELED);
   }
 
   async findOne(id: string) {

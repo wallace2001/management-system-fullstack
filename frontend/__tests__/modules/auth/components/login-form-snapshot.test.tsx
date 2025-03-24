@@ -16,7 +16,7 @@ describe('LoginForm Snapshot', () => {
     const { container } = render(
       <QueryClientProvider client={queryClient}>
         <LoginForm />
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(container).toMatchSnapshot();
