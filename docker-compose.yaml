@@ -38,7 +38,7 @@ services:
       POSTGRES_DB: management
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "myuser"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
     networks:
