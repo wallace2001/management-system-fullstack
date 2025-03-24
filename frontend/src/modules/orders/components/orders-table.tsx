@@ -87,6 +87,7 @@ export function OrdersTable() {
                     <Button
                       size="sm"
                       variant="destructive"
+                      disabled={order.status === 'COMPLETED'}
                       onClick={() => openDelete(order)}
                     >
                       <Trash2 className="h-4 w-4" />

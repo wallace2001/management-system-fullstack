@@ -37,10 +37,11 @@ services:
       POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: management
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "myuser"]
+      test: ["CMD-SHELL", "pg_isready -U myuser"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 10s
     networks:
       - app
   pgadmin:
