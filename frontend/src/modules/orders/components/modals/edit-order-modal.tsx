@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -66,6 +67,7 @@ export function EditOrderModal() {
         <DialogHeader>
           <DialogTitle>Editar Pedido</DialogTitle>
         </DialogHeader>
+        <DialogDescription />
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

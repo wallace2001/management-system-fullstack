@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -31,6 +32,7 @@ export function DeleteOrderModal() {
         <DialogHeader>
           <DialogTitle>Cancelar pedido ?</DialogTitle>
         </DialogHeader>
+        <DialogDescription />
 
         <p>Tem certeza que deseja cancelar este pedido?</p>
 

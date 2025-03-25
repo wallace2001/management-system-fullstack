@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -23,6 +24,7 @@ export function ConfirmDeleteUserModal() {
             Tem certeza que deseja excluir o usuário {selectedUser?.username}?
           </DialogTitle>
         </DialogHeader>
+        <DialogDescription />
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => closeModals()}>

@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -21,7 +22,7 @@ export function DeleteProductModal() {
         <DialogHeader>
           <DialogTitle>Confirmar exclusão</DialogTitle>
         </DialogHeader>
-
+        <DialogDescription />
         <p className="text-sm">
           Deseja remover o produto <strong>{selected.name}</strong>?
         </p>

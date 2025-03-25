@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -21,6 +22,7 @@ export function ViewOrderModal() {
         <DialogHeader>
           <DialogTitle>Detalhes do Pedido</DialogTitle>
         </DialogHeader>
+        <DialogDescription />
 
         <div className="space-y-4">
           <div>
